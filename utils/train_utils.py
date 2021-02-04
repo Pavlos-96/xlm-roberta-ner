@@ -127,6 +127,7 @@ def evaluate_model(model, eval_dataset, label_list, batch_size, device):
 
      y_true = []
      y_pred = []
+     x = []
 
      label_map = {i: label for i, label in enumerate(label_list, 1)}
 
@@ -158,8 +159,25 @@ def evaluate_model(model, eval_dataset, label_list, batch_size, device):
                assert len(temp_1) == len(temp_2)
                y_true.append(temp_1)
                y_pred.append(temp_2)
+          x.append(input_ids)
+
+     with open("y_true.txt", "w") as file:
+         for i in range(len(y_true)):
+             file.write(" ".join(y_true[i]) + " ")
+             file.write("\n")
+     with open("y_pred.txt", "w") as file:
+         for i in range(len(y_pred)):
+             file.write(" ".join(y_pred[i]) + " ")
+             file.write("\n")
+     with open("sentences.txt", "w") as file:
+         for i in range(len(x)):
+             try:
+                 file.write(str(x[i]))
+                 file.write("\n")
+             except:
+                 pass
 
      report = classification_report(y_true, y_pred, digits=4)
-     f1 = f1_score(y_true, y_pred, average='Macro')
+     f1 = f1_score(y_true, y_pred, average='macro')
 
      return f1, report
